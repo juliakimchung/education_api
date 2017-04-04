@@ -1,5 +1,9 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework import viewsets
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
+
 
 from . import models
 from . import serializers
@@ -19,7 +23,8 @@ class ListCreateReview(generics.ListCreateAPIView):
         return self.queryset.filter(course_id=self.kwargs.get('course_pk'))
     def perform_create(self, serializer):
         course = get_object_or_404(
-            models.Course, pk=self.kwarfs.get('course_pk'))
+            models.Course, pk=self.kwargs.get('course_pk'))
+        serializer.save(course=course)
 
 class RetrieveUpdateDestroyReview(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Review.objects.all()
@@ -29,3 +34,13 @@ class RetrieveUpdateDestroyReview(generics.RetrieveUpdateDestroyAPIView):
             self.get_queryset(),
             course_id=self.kwargs.get('course_pk'),
             pk=self.kwargs.get('pk'))
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = models.Course.objects.all()
+    serializer_class = serializers.CourseSerializer
+
+    
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = models.Review.objects.all()
+    serializer_class= serializers.ReviewSerializer

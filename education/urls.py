@@ -15,10 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from rest_framework.routers import SimpleRouter
+from educate_api.views import*
 
+
+router = SimpleRouter()
+router.register(r'courses', CourseViewSet)
+router.register(r'reviews', ReviewViewSet)
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls',
-    														namespace='rest_framework')),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^api/v1/courses/', include('educate_api.urls', namespace='courses')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/v2/', include(router.urls, namespace='apiv2' )),
 ]
