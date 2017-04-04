@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-
+from rest_framework import mixins
 
 from . import models
 from . import serializers
@@ -39,7 +39,13 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = models.Course.objects.all()
     serializer_class = serializers.CourseSerializer
 
-    
+    @detail_route(methods=['get'])
+    def reviews(self, request, pk=None):
+        course = self.get_object()
+        serializer = serializers.ReviewSerializer(course.reviews.all(), many=True)
+        return Response(serializer.data)
+
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = models.Review.objects.all()
