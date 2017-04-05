@@ -19,6 +19,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = models.Review
 
 class CourseSerializer(serializers.ModelSerializer):
+    reviews=serializers.HyperlinkedRelatedField(many=True, read_only=True,
+        view_name='apiv2:review-detail')
     class Meta:
         model = models.Course
-        fields = '__all__'
+        fields = (
+            'title',
+            'description',
+            'reviews')
